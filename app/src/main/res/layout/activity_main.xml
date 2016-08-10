@@ -14,8 +14,8 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:layout_width="300dp"
-            android:layout_height="200dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="#30000000" />
     </net.oilchem.www.refreshview.RefreshView>
 

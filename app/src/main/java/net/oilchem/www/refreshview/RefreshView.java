@@ -2,9 +2,10 @@ package net.oilchem.www.refreshview;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Scroller;
 
 /**
@@ -12,9 +13,10 @@ import android.widget.Scroller;
  */
 public class RefreshView extends FrameLayout {
     public double obstruction = 1.8;
-    public int HeaderHeight = 150;
-    public int FooterHeight = 100;
+    public int HeaderHeight = 110;
+    public int FooterHeight = 110;
     Scroller scroller;
+    public RelativeLayout HeaderView, FooterView;
 
     public RefreshView(Context context) {
         super(context);
@@ -36,6 +38,18 @@ public class RefreshView extends FrameLayout {
     private void init() {
 
         scroller = new Scroller(getContext());
+        HeaderView = (RelativeLayout) View.inflate(getContext(), R.layout.view_header, null);
+        FooterView = (RelativeLayout) View.inflate(getContext(), R.layout.view_footer, null);
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        addView(HeaderView, params);
+        addView(FooterView, params);
+
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
     }
 
     float downY;
@@ -51,15 +65,32 @@ public class RefreshView extends FrameLayout {
                 if (getScrollY() <= FooterHeight && getScrollY() >= -HeaderHeight) {
                     float lastY = event.getRawY();
                     scrollBy(0, (int) ((downY - lastY) / obstruction));
+                    if (getScrollY() < 0)//下拉操作
+                    {
+                        HeaderView.layout(HeaderView.getLeft(), getScrollY(), HeaderView.getRight(), getScrollY() + HeaderView.getHeight());
+                    } else {
+                        FooterView.layout(FooterView.getLeft(), getMeasuredHeight() - FooterHeight + getScrollY(), FooterView.getRight(), getMeasuredHeight() + getScrollY());
+                    }
+
                     downY = event.getRawY();
                 }
 //                Log.e("move", getScrollY() + "");
 
 
-
                 break;
             case MotionEvent.ACTION_UP:
-                smoothScrollClose();
+                if (getScrollY() <= -HeaderHeight) {//满足刷新条件
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            smoothScrollClose();
+                        }
+                    }, 1000);
+
+                } else {
+                    smoothScrollClose();
+                }
+
 //                smoothScrollOpen();
                 break;
         }
@@ -82,7 +113,6 @@ public class RefreshView extends FrameLayout {
     public void computeScroll() {
 
         if (scroller.computeScrollOffset()) {
-            Log.e("EVEVT", "computeScroll===" + scroller.getCurrY());
             scrollTo(scroller.getCurrX(), scroller.getCurrY());
             postInvalidate();
 
@@ -94,6 +124,10 @@ public class RefreshView extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+
+        HeaderHeight=HeaderView.getHeight();
+        FooterHeight=FooterView.getHeight();
+
     }
 
 
