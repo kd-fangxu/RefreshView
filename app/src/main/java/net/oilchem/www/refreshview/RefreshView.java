@@ -123,8 +123,8 @@ public class RefreshView extends FrameLayout {
             boolean canMoveup = ViewCompat.canScrollVertically(getTargetView(), -1);
             boolean canMoveDown = ViewCompat.canScrollVertically(getTargetView(), 1);
             if (e2.getRawY() - e1.getRawY() > 0) {//下滑
-                Log.e("move", "下滑");
-                if (canMoveDown && !canMoveup && refreshListener != null) {
+                Log.e("move", "手指下滑界面上滑");
+                if (canMoveDown && !canMoveup && refreshListener != null) {//界面上滑到最顶部
                     return true;
                 }
                 if (!canMoveDown && canMoveup) {
@@ -132,11 +132,11 @@ public class RefreshView extends FrameLayout {
                 }
             } else {
 
-                Log.e("move", "上滑");
+                Log.e("move", "手指上滑界面下滑");
                 if (!canMoveup) {
                     return false;
                 }
-                if (!canMoveDown && canMoveup && loadListener != null) {
+                if (!canMoveDown && canMoveup && loadListener != null) {//界面下滑到最底部
                     return true;
                 }
             }

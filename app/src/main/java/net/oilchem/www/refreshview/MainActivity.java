@@ -30,12 +30,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        refreshView.setLoadListener(new RefreshView.onLoadListener() {
-//            @Override
-//            public void onLoad(RefreshView refreshView) {
-//                Log.e("Main", "OnLoad");
-//            }
-//        });
+        refreshView.setLoadListener(new RefreshView.onLoadListener() {
+            @Override
+            public void onLoad(RefreshView refreshView) {
+                Log.e("Main", "OnLoad");
+            }
+        });
         tvTest1 = (TextView) findViewById(R.id.tv_test1);
         tvTest2 = (TextView) findViewById(R.id.tv_test2);
 
